@@ -1,0 +1,19 @@
+.containerFlex {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    height: 100vh;
+    width: 100%;
+}
+
+.viewerColumn {
+    overflow-y: auto;
+    overflow-x: hidden;
+    resize: horizontal;
+}
+
+.notesColumn {
+    flex-grow: 1;
+}

@@ -1,6 +1,8 @@
-import './index.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import './style.css';
+import './debug.css';
+import 'bulma/css/bulma.min.css';
+import Editor from './editor/editor';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<Editor />, document.getElementById('root'));

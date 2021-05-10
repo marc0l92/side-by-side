@@ -1,0 +1,16 @@
+.debugBox1 {
+    border: 3px solid red;
+    background-color: salmon;
+}
+.debugBox2 {
+    border: 3px solid blue;
+    background-color: lightblue;
+}
+.debugBox3 {
+    border: 3px solid green;
+    background-color: lightgreen;
+}
+.debugBox4 {
+    border: 3px solid yellow;
+    background-color: lightyellow;
+}

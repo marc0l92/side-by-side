@@ -1,0 +1,8 @@
+.notesCanvas {
+    position: relative;
+}
+
+.noteBox {
+    position: absolute;
+    resize: both;
+}

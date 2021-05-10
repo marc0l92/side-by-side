@@ -1,0 +1,20 @@
+* {
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+}
+/* Remove bullet points */
+ul {
+	list-style-type: none;
+}
+/* Remove undrlining */
+a {
+	text-decoration: none;
+}
+/* Keep big images in the container */
+img {
+	width: 100%;
+}
+
+#root {
+}
