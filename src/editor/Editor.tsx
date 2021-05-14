@@ -5,7 +5,7 @@ import PdfViewer from './PdfViewer'
 import NotesCanvas from './NotesCanvas'
 
 const Editor: React.FC = () => (
-    <div className="containerFlex debugBox1">
+    <div className="containerFlex">
         <PdfViewer />
         <NotesCanvas />
     </div>);

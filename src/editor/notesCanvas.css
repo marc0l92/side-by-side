@@ -1,5 +1,6 @@
 .notesCanvas {
     position: relative;
+    background-color: #EEE;
 }
 
 .note {
@@ -13,7 +14,7 @@
     background-color: #FFF;
 }
 
-.note>.reference {
+.note .reference {
     background-color: #CCC;
     font-size: 11pt;
     padding: 5px;
@@ -21,34 +22,68 @@
     border: none;
     outline: none;
 }
-.note>button.reference {
+
+.note button.reference {
     cursor: pointer;
 }
-.note>div.reference {
+
+.note div.reference {
     cursor: move;
 }
 
-.note>button.reference:active {
+.note button.reference:active {
     background-color: #BBB;
 }
 
-.note>.textArea {
-    font-size: 11pt;
+.note .moveHandle {
+    padding: 3px 10px;
+    text-align: center;
+    background-color: #F6F6F6;
+    cursor: move;
+}
+.note .moveHandle>div {
+    border-color: #ccc;
+    border-width: 1px 0px;
+    border-style: solid;
+    padding: 1px;
+}
+
+.note .textArea {
     min-width: 30px;
     min-height: 20px;
     padding: 5px 10px;
 }
 
-.note>.textArea:active {
+.note .textArea:active {
     /* box-shadow: none !important; */
     /* text-shadow: none !important; */
     /* border: none !important; */
     outline: none;
 }
 
-.note>.textArea:focus {
+.note .textArea:focus {
     /* box-shadow: none !important; */
     /* text-shadow: none !important; */
     /* border: none !important; */
-    outline: red solid;
+    outline: none;
+    border: blue 2px solid;
+}
+
+.note .resizeHandle {
+    position: absolute;
+    right: -9px;
+    bottom: -15px;
+    color: #222;
+    opacity: 70%;
+    transform: rotate(45deg);
+    border: none;
+    outline: none;
+    cursor: se-resize;
+    background: transparent;
+}
+.note .resizeHandle.fixed {
+    color: #c22020;
+}
+.note .resizeHandle:active {
+    opacity: 100%;
 }

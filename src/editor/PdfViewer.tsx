@@ -13,7 +13,7 @@ const Editor: React.FC = () => {
     }
 
     return (
-        <div className="viewerColumn debugBox2">
+        <div className="viewerColumn">
             <Document file={samplePDF} onLoadSuccess={onDocumentLoadSuccess}>
                 {Array.from(
                     new Array(numPages),

@@ -1,10 +1,13 @@
-import React, { useState, useRef, MouseEventHandler } from 'react'
+import React, { useState, useRef, MouseEventHandler, CSSProperties } from 'react'
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
+// import ReactMarkdown from 'react-markdown'
+// import gfm from 'remark-gfm'
 
 const Note: React.FC<INoteProp> = (props) => {
     const [text, setText] = useState(props.text)
     const [reference, setReference] = useState(props.reference)
     const [position, setPosition] = useState(props.position)
+    let [size, setSize] = useState({ x: 250, y: 30 })
     const [moving, setMoving] = useState(false)
     const textAreaRef = useRef(null)
     let initialPosition: IPosition = { x: 0, y: 0 };
@@ -41,20 +44,70 @@ const Note: React.FC<INoteProp> = (props) => {
         document.onmouseup = null
     }
 
-    const noteStyle = {
-        top: position.y + "px",
-        left: position.x + "px",
+    // Resize div
+    const onResizeStart: MouseEventHandler = (event) => {
+        console.log("onResizeStart")
+        if (event.button === 0 && event.buttons === 1) {
+            event.preventDefault()
+            initialPosition = { x: event.clientX, y: event.clientY }
+            document.onmouseup = onResizeEnd
+            document.onmousemove = onResizeMove
+            if (size.x < 0) {
+                console.log(textAreaRef.current)
+                console.log(textAreaRef.current.getBoundingClientRect())
+                size = { x: textAreaRef.current.el.current.style.width, y: 0 }
+                setSize({ x: textAreaRef.current.el.current.style.width, y: 0 })
+            }
+        }
+    }
+    const onResizeMove = (event: any) => {
+        console.log("onResizeMove")
+        setSize({
+            x: size.x + event.clientX - initialPosition.x,
+            y: size.y + event.clientY - initialPosition.y
+        })
+    }
+    const onResizeEnd = (event: any) => {
+        console.log("onResizeEnd")
+        setSize({
+            x: size.x + event.clientX - initialPosition.x,
+            y: size.y + event.clientY - initialPosition.y
+        })
+        document.onmousemove = null
+        document.onmouseup = null
+    }
+    const onResetSize: MouseEventHandler = (event) => {
+        setSize({
+            x: -1,
+            y: 0
+        })
+    }
+
+    const noteStyle: CSSProperties = {
+        top: position.y + 'px',
+        left: position.x + 'px',
         opacity: (moving) ? '50%' : '100%',
         cursor: (moving) ? 'move' : '',
     }
-    const referenceStyle = {
+    const referenceStyle: CSSProperties = {
         cursor: (moving) ? 'move' : '',
     }
+    const textAreaStyle: CSSProperties = {
+        width: (size.x >= 0) ? (size.x + 'px') : '',
+        minHeight: size.y + 'px',
+    }
+    const resizeHandleClass: string = "resizeHandle" + ((size.x >= 0) ? ' fixed' : '')
+    const markdown = `A paragraph with *emphasis* and **strong importance**.`
     return (
-        <div className="note" style={noteStyle} draggable="true" onDragStart={onMoveStart}>
-            <button className="reference" style={referenceStyle} hidden={!reference}><i className="fas fa-caret-left"></i></button>
-            <div className="reference" style={referenceStyle} hidden={reference}><i className="fas fa-grip-lines-vertical"></i></div>
-            <ContentEditable ref={textAreaRef} className="textArea" html={text} onChange={onContentChange} />
+        <div className="note" style={noteStyle}>
+            <button className="reference" style={referenceStyle} hidden={!reference} draggable="true" onDragStart={onMoveStart}><i className="fas fa-caret-left" /></button>
+            {/* <div className="reference" style={referenceStyle} hidden={reference} draggable="true" onDragStart={onMoveStart}><i className="fas fa-grip-lines-vertical" /></div> */}
+            <div>
+                <div className="moveHandle" draggable="true" onDragStart={onMoveStart}><div /></div>
+                <ContentEditable ref={textAreaRef} className="textArea" style={textAreaStyle} html={text} onChange={onContentChange} />
+                {/* <ReactMarkdown remarkPlugins={[gfm]} children={text} /> */}
+            </div>
+            <button className={resizeHandleClass} draggable="true" onDragStart={onResizeStart} onDoubleClick={onResetSize}><i className="fas fa-angle-right fa-2x" /></button>
         </div>
     )
 }

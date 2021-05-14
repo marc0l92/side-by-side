@@ -25,7 +25,7 @@ const NotesCanvas: React.FC = () => {
     }
 
     return (
-        <div className="notesColumn notesCanvas debugBox3" onDrop={onDrop} onDragOver={allowDrop}>
+        <div className="notesColumn notesCanvas" onDrop={onDrop} onDragOver={allowDrop}>
             {notes.map((component, index) => (<React.Fragment key={index}>
                 {component}
             </React.Fragment>))}
