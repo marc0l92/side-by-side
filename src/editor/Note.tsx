@@ -6,6 +6,7 @@ const Note: React.FC<INoteProp> = (props) => {
     const [reference, setReference] = useState(props.reference)
     const [position, setPosition] = useState(props.position)
     const [moving, setMoving] = useState(false)
+    const textAreaRef = useRef(null)
     let initialPosition: IPosition = { x: 0, y: 0 };
 
     // ContentEditable
@@ -24,6 +25,7 @@ const Note: React.FC<INoteProp> = (props) => {
     }
     const onMouseMove = (event: any) => {
         setMoving(true)
+        textAreaRef.current.el.current.blur()
         setPosition({
             x: position.x + event.clientX - initialPosition.x,
             y: position.y + event.clientY - initialPosition.y
@@ -45,10 +47,14 @@ const Note: React.FC<INoteProp> = (props) => {
         opacity: (moving) ? '50%' : '100%',
         cursor: (moving) ? 'move' : '',
     }
+    const referenceStyle = {
+        cursor: (moving) ? 'move' : '',
+    }
     return (
         <div className="note" style={noteStyle} draggable="true" onDragStart={onMoveStart}>
-            <button className="reference" hidden={!reference}><i className="fas fa-caret-left"></i></button>
-            <ContentEditable className="textArea" html={text} onChange={onContentChange} />
+            <button className="reference" style={referenceStyle} hidden={!reference}><i className="fas fa-caret-left"></i></button>
+            <div className="reference" style={referenceStyle} hidden={reference}><i className="fas fa-grip-lines-vertical"></i></div>
+            <ContentEditable ref={textAreaRef} className="textArea" html={text} onChange={onContentChange} />
         </div>
     )
 }

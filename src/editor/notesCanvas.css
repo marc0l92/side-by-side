@@ -19,13 +19,16 @@
     padding: 5px;
     color: #FFF;
     border: none;
-}
-
-.note>.reference:active, .note>.reference:focus {
     outline: none;
 }
+.note>button.reference {
+    cursor: pointer;
+}
+.note>div.reference {
+    cursor: move;
+}
 
-.note>.reference:active {
+.note>button.reference:active {
     background-color: #BBB;
 }
 
