@@ -1,43 +1,52 @@
-import React, { useState, DragEventHandler } from 'react'
+import React, { useState, useRef, MouseEventHandler } from 'react'
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
 
 const Note: React.FC<INoteProp> = (props) => {
     const [text, setText] = useState(props.text)
     const [reference, setReference] = useState(props.reference)
     const [position, setPosition] = useState(props.position)
-    const [absolutePosition, setAbsolutePosition] = useState({ x: 0, y: 0 })
-    const [dragging, setDragging] = useState(false)
+    const [moving, setMoving] = useState(false)
+    let initialPosition: IPosition = { x: 0, y: 0 };
 
     // ContentEditable
     const onContentChange = (event: ContentEditableEvent) => {
         // setText(prevState => ({ ...prevState, text: event.target.value }))
         setText(event.target.value)
     }
-    // Drag and drop
-    const onDragStartHandler: DragEventHandler = (event) => {
-        console.log("onDragStartHandler", event)
-        console.log(event.clientX, event.clientY)
-        // document.body.style.cursor = "move"
-        setAbsolutePosition({ x: event.clientX, y: event.clientY })
-        setDragging(true)
+    // Mouse down move
+    const onMoveStart: MouseEventHandler = (event) => {
+        if (event.button === 0 && event.buttons === 1) {
+            event.preventDefault()
+            initialPosition = { x: event.clientX, y: event.clientY }
+            document.onmouseup = onMoveEnd
+            document.onmousemove = onMouseMove
+        }
     }
-    const onDragEndHandler: DragEventHandler = (event) => {
-        console.log("onDragEndHandler", event)
-        console.log(event.clientX, event.clientY)
+    const onMouseMove = (event: any) => {
+        setMoving(true)
         setPosition({
-            x: position.x + event.clientX - absolutePosition.x,
-            y: position.y + event.clientY - absolutePosition.y
+            x: position.x + event.clientX - initialPosition.x,
+            y: position.y + event.clientY - initialPosition.y
         })
-        setDragging(false)
+    }
+    const onMoveEnd = (event: any) => {
+        setPosition({
+            x: position.x + event.clientX - initialPosition.x,
+            y: position.y + event.clientY - initialPosition.y
+        })
+        setMoving(false)
+        document.onmousemove = null
+        document.onmouseup = null
     }
 
     const noteStyle = {
         top: position.y + "px",
         left: position.x + "px",
-        opacity: (dragging) ? '40%' : '100%',
+        opacity: (moving) ? '50%' : '100%',
+        cursor: (moving) ? 'move' : '',
     }
     return (
-        <div className="note" draggable="true" onDragStart={onDragStartHandler} onDragEnd={onDragEndHandler} style={noteStyle}>
+        <div className="note" style={noteStyle} draggable="true" onDragStart={onMoveStart}>
             <button className="reference" hidden={!reference}><i className="fas fa-caret-left"></i></button>
             <ContentEditable className="textArea" html={text} onChange={onContentChange} />
         </div>

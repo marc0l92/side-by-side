@@ -10,7 +10,7 @@
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: stretch;
-    width: 100%;
+    background-color: #FFF;
 }
 
 .note>.reference {
@@ -20,9 +20,11 @@
     color: #FFF;
     border: none;
 }
+
 .note>.reference:active, .note>.reference:focus {
     outline: none;
 }
+
 .note>.reference:active {
     background-color: #BBB;
 }
@@ -31,12 +33,19 @@
     font-size: 11pt;
     min-width: 30px;
     min-height: 20px;
-    background-color: #FFF;
     padding: 5px 10px;
 }
-.note>.textArea:active, .note>.textArea:focus {
+
+.note>.textArea:active {
     /* box-shadow: none !important; */
     /* text-shadow: none !important; */
     /* border: none !important; */
-    outline: blue solid;
+    outline: none;
+}
+
+.note>.textArea:focus {
+    /* box-shadow: none !important; */
+    /* text-shadow: none !important; */
+    /* border: none !important; */
+    outline: red solid;
 }
