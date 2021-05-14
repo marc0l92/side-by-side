@@ -2,7 +2,43 @@
     position: relative;
 }
 
-.noteBox {
+.note {
     position: absolute;
-    resize: both;
+    top: 20px;
+    left: 20px;
+    z-index: 9;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    width: 100%;
+}
+
+.note>.reference {
+    background-color: #CCC;
+    font-size: 11pt;
+    padding: 5px;
+    color: #FFF;
+    border: none;
+}
+.note>.reference:active, .note>.reference:focus {
+    outline: none;
+}
+.note>.reference:active {
+    background-color: #BBB;
+}
+
+.note>.textArea {
+    font-size: 11pt;
+    min-width: 30px;
+    min-height: 20px;
+    background-color: #FFF;
+    padding: 5px 10px;
+}
+.note>.textArea:active, .note>.textArea:focus {
+    /* box-shadow: none !important; */
+    /* text-shadow: none !important; */
+    /* border: none !important; */
+    outline: blue solid;
 }

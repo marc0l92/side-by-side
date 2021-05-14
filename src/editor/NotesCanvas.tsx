@@ -1,32 +1,37 @@
-import { hot } from 'react-hot-loader'
-import React, { useState } from 'react'
+import React, { useState, DragEventHandler } from 'react'
+import Note from './Note'
 import './notesCanvas.css'
 
-const NotesCanvas = () => {
-    const [notes, setNotes] = useState([])
+const NotesCanvas: React.FC = () => {
+    const [notes, setNotes] = useState([
+        // <Note />,
+        // <Note />,
+    ])
 
-    function allowDrop(event: any) {
-        console.log(event)
+    const allowDrop: DragEventHandler = (event) => {
         event.preventDefault();
     }
-    function drag(event: any) {
-        console.log(event)
-        event.preventDefault();
-    }
-    function drop(event: any) {
+    // const drag: DragEventHandler = (event) => {
+    //     console.log(event)
+    //     event.preventDefault();
+    // }
+    const onDrop: DragEventHandler = (event) => {
         console.log(event)
         var data = event.dataTransfer.getData("Text")
         console.log(data)
-        setNotes([...notes, data])
+
+        // setNotes([...notes, { text: data }])
         event.preventDefault();
     }
 
     return (
-        <div className="notesColumn notesCanvas debugBox3" onDrop={drop} onDragOver={allowDrop}>
-            {notes}
-            <div className="box noteBox" draggable="true" onDragStart={drag}>test</div>
+        <div className="notesColumn notesCanvas debugBox3" onDrop={onDrop} onDragOver={allowDrop}>
+            {notes.map((component, index) => (<React.Fragment key={index}>
+                {component}
+            </React.Fragment>))}
+            <Note />
         </div>
     )
 }
 
-export default hot(module)(NotesCanvas);
+export default NotesCanvas;

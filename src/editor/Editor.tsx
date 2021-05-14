@@ -4,12 +4,10 @@ import './editor.css'
 import PdfViewer from './PdfViewer'
 import NotesCanvas from './NotesCanvas'
 
-const Editor = () => (
+const Editor: React.FC = () => (
     <div className="containerFlex debugBox1">
-        <div className="viewerColumn debugBox2">
-            <PdfViewer />
-        </div>
-            <NotesCanvas />
+        <PdfViewer />
+        <NotesCanvas />
     </div>);
 
 export default hot(module)(Editor);
