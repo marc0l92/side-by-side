@@ -29,8 +29,9 @@ const NotesCanvas: React.FC = () => {
     const [zoom, setZoom] = useState({ x: 0, y: 0, value: 1 })
     const [zoomIndicator, setZoomIndicator] = useState({ hidden: true, timer: null })
     const notesCanvasRef = useRef()
-    // const [position, setPosition] = useState({ x: 0, y: 0 })
-    // let initialPosition = { x: 0, y: 0 };
+    const [position, setPosition] = useState({ x: 0, y: 0 })
+    const [smoothTransitions, setSmoothTransitions] = useState(false)
+    let initialPosition = { x: 0, y: 0 };
 
     const allowDrop: DragEventHandler = (event) => {
         event.preventDefault();
@@ -74,6 +75,7 @@ const NotesCanvas: React.FC = () => {
                 y: - target.y * newZoom + pointer.y,
                 value: newZoom,
             })
+            setSmoothTransitions(true)
         }
         setZoomIndicator({
             hidden: false,
@@ -81,35 +83,41 @@ const NotesCanvas: React.FC = () => {
         })
     }
     // Pan
-    // const onPanStart: DragEventHandler = (event) => {
-    //     if (event.button === 0 && event.buttons === 1) {
-    //         event.preventDefault()
-    //         initialPosition = { x: event.clientX, y: event.clientY }
-    //         document.onmouseup = onPanEnd
-    //         document.onmousemove = onMouseMove
-    //     }
-    // }
-    // const onMouseMove = (event: any) => {
-    //     setPosition({
-    //         x: position.x + event.clientX - initialPosition.x,
-    //         y: position.y + event.clientY - initialPosition.y
-    //     })
-    // }
-    // const onPanEnd = (event: any) => {
-    //     setPosition({
-    //         x: position.x + event.clientX - initialPosition.x,
-    //         y: position.y + event.clientY - initialPosition.y
-    //     })
-    //     document.onmousemove = null
-    //     document.onmouseup = null
-    // }
+    const onPanStart: DragEventHandler = (event) => {
+        if ((event.target as HTMLDivElement).classList.contains('canPan') && event.button === 0 && event.buttons === 1) {
+            event.preventDefault()
+            console.log('panning')
+            initialPosition = { x: event.clientX, y: event.clientY }
+            document.onmouseup = onPanEnd
+            document.onmousemove = onMouseMove
+            document.body.style.cursor = 'move'
+        }
+    }
+    const onMouseMove = (event: any) => {
+        setPosition({
+            x: position.x + event.clientX - initialPosition.x,
+            y: position.y + event.clientY - initialPosition.y,
+        })
+        setSmoothTransitions(false)
+    }
+    const onPanEnd = (event: any) => {
+        setPosition({
+            x: position.x + event.clientX - initialPosition.x,
+            y: position.y + event.clientY - initialPosition.y,
+        })
+        setSmoothTransitions(false)
+        document.onmousemove = null
+        document.onmouseup = null
+        document.body.style.cursor = ''
+    }
     const movingCanvasStyle: CSSProperties = {
-        transform: `translate(${zoom.x}px, ${zoom.y}px) scale(${zoom.value}, ${zoom.value})`,
+        transform: `translate(${zoom.x + position.x}px, ${zoom.y + position.y}px) scale(${zoom.value}, ${zoom.value})`,
+        transition: smoothTransitions ? 'transform .3s ease' : '',
     }
     return (
-        <div className="notesColumn notesCanvas" ref={notesCanvasRef} onDrop={onDrop} onDragOver={allowDrop} onWheel={onZoom}>
+        <div className="notesColumn notesCanvas canPan" ref={notesCanvasRef} onDrop={onDrop} onDragOver={allowDrop} onWheel={onZoom} onDragStart={onPanStart} draggable="true">
             <div className="zoomPercentage" hidden={zoomIndicator.hidden}>{Math.round(zoom.value * 100)} %</div>
-            <div className="movingCanvas debugBox5" style={movingCanvasStyle}>
+            <div className="movingCanvas canPan debugBox5" style={movingCanvasStyle}>
                 {notesState.notes.map((note) => (<Note key={note.id} data={note} notesDispatch={notesDispatch} />))}
             </div>
         </div>

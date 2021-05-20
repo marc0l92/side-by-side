@@ -12,7 +12,6 @@ const Note: React.FC<INoteProp> = ({ data, notesDispatch }) => {
 
     // ContentEditable
     const onContentChange = (event: ContentEditableEvent) => {
-        // setText(event.target.value)
         notesDispatch({ type: NOTES_ACTIONS.EDIT, payload: { id: id, text: event.target.value } })
     }
     // Move note
@@ -102,7 +101,7 @@ const Note: React.FC<INoteProp> = ({ data, notesDispatch }) => {
     const noteStyle: CSSProperties = {
         top: position.y + 'px',
         left: position.x + 'px',
-        opacity: (moving) ? '50%' : '100%',
+        opacity: (moving) ? '60%' : '100%',
         cursor: (moving) ? 'move' : '',
     }
     const referenceStyle: CSSProperties = {
