@@ -26,10 +26,9 @@ const NotesCanvas: React.FC = () => {
             size: { x: 250, y: 30 },
         }]
     })
-    const [zoom, setZoom] = useState({ x: 0, y: 0, value: 1 })
+    const [zoom, setZoom] = useState({ x: 0, y: 0, scale: 1 })
     const [zoomIndicator, setZoomIndicator] = useState({ hidden: true, timer: null })
     const notesCanvasRef = useRef()
-    const [position, setPosition] = useState({ x: 0, y: 0 })
     const [smoothTransitions, setSmoothTransitions] = useState(false)
     let initialPosition = { x: 0, y: 0 };
 
@@ -58,22 +57,22 @@ const NotesCanvas: React.FC = () => {
     // Zoom
     const onZoom: WheelEventHandler = (event) => {
         clearTimeout(zoomIndicator.timer)
-        let newZoom = zoom.value - event.deltaY * ZOOM_CONFIG.speed
+        let newZoom = zoom.scale - event.deltaY * ZOOM_CONFIG.speed
         newZoom = Math.min(Math.max(newZoom, ZOOM_CONFIG.min), ZOOM_CONFIG.max)
-        if (newZoom !== zoom.value) {
+        if (newZoom !== zoom.scale) {
             const canvasPosition = (notesCanvasRef.current as HTMLDivElement).getBoundingClientRect()
             const pointer = {
                 x: event.clientX - canvasPosition.x,
                 y: event.clientY - canvasPosition.y,
             }
             const target = {
-                x: (pointer.x - zoom.x) / zoom.value,
-                y: (pointer.y - zoom.y) / zoom.value,
+                x: (pointer.x - zoom.x) / zoom.scale,
+                y: (pointer.y - zoom.y) / zoom.scale,
             }
             setZoom({
                 x: - target.x * newZoom + pointer.x,
                 y: - target.y * newZoom + pointer.y,
-                value: newZoom,
+                scale: newZoom,
             })
             setSmoothTransitions(true)
         }
@@ -94,16 +93,18 @@ const NotesCanvas: React.FC = () => {
         }
     }
     const onMouseMove = (event: any) => {
-        setPosition({
-            x: position.x + event.clientX - initialPosition.x,
-            y: position.y + event.clientY - initialPosition.y,
+        setZoom({
+            ...zoom,
+            x: zoom.x + event.clientX - initialPosition.x,
+            y: zoom.y + event.clientY - initialPosition.y,
         })
         setSmoothTransitions(false)
     }
     const onPanEnd = (event: any) => {
-        setPosition({
-            x: position.x + event.clientX - initialPosition.x,
-            y: position.y + event.clientY - initialPosition.y,
+        setZoom({
+            ...zoom,
+            x: zoom.x + event.clientX - initialPosition.x,
+            y: zoom.y + event.clientY - initialPosition.y,
         })
         setSmoothTransitions(false)
         document.onmousemove = null
@@ -111,12 +112,12 @@ const NotesCanvas: React.FC = () => {
         document.body.style.cursor = ''
     }
     const movingCanvasStyle: CSSProperties = {
-        transform: `translate(${zoom.x + position.x}px, ${zoom.y + position.y}px) scale(${zoom.value}, ${zoom.value})`,
+        transform: `translate(${zoom.x}px, ${zoom.y}px) scale(${zoom.scale}, ${zoom.scale})`,
         transition: smoothTransitions ? 'transform .3s ease' : '',
     }
     return (
         <div className="notesColumn notesCanvas canPan" ref={notesCanvasRef} onDrop={onDrop} onDragOver={allowDrop} onWheel={onZoom} onDragStart={onPanStart} draggable="true">
-            <div className="zoomPercentage" hidden={zoomIndicator.hidden}>{Math.round(zoom.value * 100)} %</div>
+            <div className="zoomPercentage" hidden={zoomIndicator.hidden}>{Math.round(zoom.scale * 100)} %</div>
             <div className="movingCanvas canPan debugBox5" style={movingCanvasStyle}>
                 {notesState.notes.map((note) => (<Note key={note.id} data={note} notesDispatch={notesDispatch} />))}
             </div>
