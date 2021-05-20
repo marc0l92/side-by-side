@@ -51,8 +51,8 @@ const NotesCanvas: React.FC = () => {
         if (newZoom !== zoom.value) {
             const canvasPosition = (notesCanvasRef.current as HTMLDivElement).getBoundingClientRect()
             const pointer = {
-                x: (event.clientX - (event.target as HTMLDivElement).offsetLeft) - canvasPosition.x,
-                y: (event.clientY - (event.target as HTMLDivElement).offsetTop) - canvasPosition.y,
+                x: event.clientX - canvasPosition.x,
+                y: event.clientY - canvasPosition.y,
             }
             const target = {
                 x: (pointer.x - zoom.x) / zoom.value,
