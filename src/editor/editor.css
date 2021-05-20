@@ -11,6 +11,7 @@
 .viewerColumn {
     overflow-y: auto;
     overflow-x: hidden;
+    z-index: 10;
     /* resize: horizontal; */
 }
 

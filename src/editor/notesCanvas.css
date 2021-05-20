@@ -1,17 +1,41 @@
 .notesCanvas {
-    position: relative;
     background-color: #EEE;
+    position: relative;
+    overflow: hidden;
+}
+
+.notesCanvas .zoomPercentage {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    opacity: 80%;
+    background-color: #777;
+    color: #FFF;
+    padding: 5px 8px;
+    border-radius: 20%;
+    z-index: 9;
+}
+
+.notesCanvas .movingCanvas {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    transform-origin: 0 0;
+    transition: transform .2s;
 }
 
 .note {
     position: absolute;
-    z-index: 9;
+    z-index: 5;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: stretch;
     background-color: #FFF;
+    box-shadow: 5px 10px 15px #888;
 }
 
 .note .reference {
@@ -41,6 +65,7 @@
     background-color: #F6F6F6;
     cursor: move;
 }
+
 .note .moveHandle>div {
     border-color: #ccc;
     border-width: 1px 0px;
@@ -81,9 +106,11 @@
     cursor: se-resize;
     background: transparent;
 }
+
 .note .resizeHandle.fixed {
     color: #c22020;
 }
+
 .note .resizeHandle:active {
     opacity: 100%;
 }

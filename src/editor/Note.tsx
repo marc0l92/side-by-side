@@ -1,13 +1,13 @@
-import React, { useState, useRef, MouseEventHandler, CSSProperties } from 'react'
+import React, { useState, useRef, MouseEventHandler, DragEventHandler, CSSProperties } from 'react'
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
 // import ReactMarkdown from 'react-markdown'
 // import gfm from 'remark-gfm'
 
-const Note: React.FC<INoteProp> = (props) => {
-    const [text, setText] = useState(props.text)
-    const [reference, setReference] = useState(props.reference)
-    const [position, setPosition] = useState(props.position)
-    let [size, setSize] = useState({ x: 250, y: 30 })
+const Note: React.FC<INoteProp> = ({ data }) => {
+    const [text, setText] = useState(data.text)
+    const [reference, setReference] = useState(data.reference)
+    const [position, setPosition] = useState(data.position)
+    const [size, setSize] = useState({ x: 250, y: 30 })
     const [moving, setMoving] = useState(false)
     const textAreaRef = useRef(null)
     let initialPosition: IPosition = { x: 0, y: 0 };
@@ -17,8 +17,8 @@ const Note: React.FC<INoteProp> = (props) => {
         // setText(prevState => ({ ...prevState, text: event.target.value }))
         setText(event.target.value)
     }
-    // Mouse down move
-    const onMoveStart: MouseEventHandler = (event) => {
+    // Move note
+    const onMoveStart: DragEventHandler = (event) => {
         if (event.button === 0 && event.buttons === 1) {
             event.preventDefault()
             initialPosition = { x: event.clientX, y: event.clientY }
@@ -43,32 +43,22 @@ const Note: React.FC<INoteProp> = (props) => {
         document.onmousemove = null
         document.onmouseup = null
     }
-
-    // Resize div
-    const onResizeStart: MouseEventHandler = (event) => {
-        console.log("onResizeStart")
+    // Resize note
+    const onResizeStart: DragEventHandler = (event) => {
         if (event.button === 0 && event.buttons === 1) {
             event.preventDefault()
             initialPosition = { x: event.clientX, y: event.clientY }
             document.onmouseup = onResizeEnd
             document.onmousemove = onResizeMove
-            if (size.x < 0) {
-                console.log(textAreaRef.current)
-                console.log(textAreaRef.current.getBoundingClientRect())
-                size = { x: textAreaRef.current.el.current.style.width, y: 0 }
-                setSize({ x: textAreaRef.current.el.current.style.width, y: 0 })
-            }
         }
     }
     const onResizeMove = (event: any) => {
-        console.log("onResizeMove")
         setSize({
             x: size.x + event.clientX - initialPosition.x,
             y: size.y + event.clientY - initialPosition.y
         })
     }
     const onResizeEnd = (event: any) => {
-        console.log("onResizeEnd")
         setSize({
             x: size.x + event.clientX - initialPosition.x,
             y: size.y + event.clientY - initialPosition.y
@@ -83,6 +73,7 @@ const Note: React.FC<INoteProp> = (props) => {
         })
     }
 
+    // Style
     const noteStyle: CSSProperties = {
         top: position.y + 'px',
         left: position.x + 'px',
@@ -97,7 +88,6 @@ const Note: React.FC<INoteProp> = (props) => {
         minHeight: size.y + 'px',
     }
     const resizeHandleClass: string = "resizeHandle" + ((size.x >= 0) ? ' fixed' : '')
-    const markdown = `A paragraph with *emphasis* and **strong importance**.`
     return (
         <div className="note" style={noteStyle}>
             <button className="reference" style={referenceStyle} hidden={!reference} draggable="true" onDragStart={onMoveStart}><i className="fas fa-caret-left" /></button>
@@ -113,15 +103,21 @@ const Note: React.FC<INoteProp> = (props) => {
 }
 
 Note.defaultProps = {
-    reference: true,
-    text: "Initial text",
-    position: { x: 20, y: 20 },
+    data: {
+        id: 0,
+        reference: true,
+        text: "Initial text",
+        position: { x: 20, y: 20 },
+    },
 }
 
 interface INoteProp {
-    reference?: boolean,
-    text?: string,
-    position?: IPosition,
+    data: {
+        id: number,
+        reference?: boolean,
+        text?: string,
+        position?: IPosition,
+    }
 }
 interface IPosition {
     x: number, y: number
