@@ -1,5 +1,6 @@
 import React, { useState, useRef, DragEventHandler, WheelEventHandler, CSSProperties } from 'react'
 import Note from './Note'
+import { reducer, NOTES_ACTIONS } from '../models/notesState'
 import './notesCanvas.css'
 
 const ZOOM_CONFIG = {
@@ -10,18 +11,21 @@ const ZOOM_CONFIG = {
 }
 
 const NotesCanvas: React.FC = () => {
-    const [notes, setNotes] = useState([{
-        id: 1,
-        reference: true,
-        text: "Initial text1",
-        position: { x: 20, y: 20 },
-    }, {
-        id: 2,
-        reference: false,
-        text: "Initial text2",
-        position: { x: 120, y: 80 },
-    }
-    ])
+    const [notesState, notesDispatch] = React.useReducer(reducer, {
+        notes: [{
+            id: '1',
+            reference: true,
+            text: "Initial text1",
+            position: { x: 20, y: 20 },
+            size: { x: 250, y: 30 },
+        }, {
+            id: '2',
+            reference: false,
+            text: "Initial text2",
+            position: { x: 120, y: 80 },
+            size: { x: 250, y: 30 },
+        }]
+    })
     const [zoom, setZoom] = useState({ x: 0, y: 0, value: 1 })
     const [zoomIndicator, setZoomIndicator] = useState({ hidden: true, timer: null })
     const notesCanvasRef = useRef()
@@ -37,11 +41,18 @@ const NotesCanvas: React.FC = () => {
     // }
     const onDrop: DragEventHandler = (event) => {
         event.preventDefault();
-        console.log(event)
-        var data = event.dataTransfer.getData("Text")
-        console.log(data)
-
-        // setNotes([...notes, { text: data }])
+        const canvasPosition = (notesCanvasRef.current as HTMLDivElement).getBoundingClientRect()
+        notesDispatch({
+            type: NOTES_ACTIONS.CREATE,
+            payload: {
+                text: event.dataTransfer.getData("Text"),
+                reference: true,
+                position: {
+                    x: event.clientX - canvasPosition.x,
+                    y: event.clientY - canvasPosition.y,
+                }
+            }
+        })
     }
     // Zoom
     const onZoom: WheelEventHandler = (event) => {
@@ -99,10 +110,10 @@ const NotesCanvas: React.FC = () => {
         <div className="notesColumn notesCanvas" ref={notesCanvasRef} onDrop={onDrop} onDragOver={allowDrop} onWheel={onZoom}>
             <div className="zoomPercentage" hidden={zoomIndicator.hidden}>{Math.round(zoom.value * 100)} %</div>
             <div className="movingCanvas debugBox5" style={movingCanvasStyle}>
-                {notes.map((note) => (<Note key={note.id} data={note} />))}
+                {notesState.notes.map((note) => (<Note key={note.id} data={note} notesDispatch={notesDispatch} />))}
             </div>
         </div>
     )
 }
 
-export default NotesCanvas;
+export default NotesCanvas

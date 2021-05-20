@@ -1,21 +1,19 @@
 import React, { useState, useRef, MouseEventHandler, DragEventHandler, CSSProperties } from 'react'
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
+import { NOTES_ACTIONS, INote, INoteAction } from '../models/notesState'
 // import ReactMarkdown from 'react-markdown'
 // import gfm from 'remark-gfm'
 
-const Note: React.FC<INoteProp> = ({ data }) => {
-    const [text, setText] = useState(data.text)
-    const [reference, setReference] = useState(data.reference)
-    const [position, setPosition] = useState(data.position)
-    const [size, setSize] = useState({ x: 250, y: 30 })
+const Note: React.FC<INoteProp> = ({ data, notesDispatch }) => {
+    const { id, reference, position, text, size } = data
     const [moving, setMoving] = useState(false)
     const textAreaRef = useRef(null)
-    let initialPosition: IPosition = { x: 0, y: 0 };
+    let initialPosition = { x: 0, y: 0 };
 
     // ContentEditable
     const onContentChange = (event: ContentEditableEvent) => {
-        // setText(prevState => ({ ...prevState, text: event.target.value }))
-        setText(event.target.value)
+        // setText(event.target.value)
+        notesDispatch({ type: NOTES_ACTIONS.EDIT, payload: { id: id, text: event.target.value } })
     }
     // Move note
     const onMoveStart: DragEventHandler = (event) => {
@@ -29,15 +27,27 @@ const Note: React.FC<INoteProp> = ({ data }) => {
     const onMouseMove = (event: any) => {
         setMoving(true)
         textAreaRef.current.el.current.blur()
-        setPosition({
-            x: position.x + event.clientX - initialPosition.x,
-            y: position.y + event.clientY - initialPosition.y
+        notesDispatch({
+            type: NOTES_ACTIONS.EDIT,
+            payload: {
+                id: id,
+                position: {
+                    x: position.x + event.clientX - initialPosition.x,
+                    y: position.y + event.clientY - initialPosition.y,
+                }
+            }
         })
     }
     const onMoveEnd = (event: any) => {
-        setPosition({
-            x: position.x + event.clientX - initialPosition.x,
-            y: position.y + event.clientY - initialPosition.y
+        notesDispatch({
+            type: NOTES_ACTIONS.EDIT,
+            payload: {
+                id: id,
+                position: {
+                    x: position.x + event.clientX - initialPosition.x,
+                    y: position.y + event.clientY - initialPosition.y,
+                }
+            }
         })
         setMoving(false)
         document.onmousemove = null
@@ -53,23 +63,38 @@ const Note: React.FC<INoteProp> = ({ data }) => {
         }
     }
     const onResizeMove = (event: any) => {
-        setSize({
-            x: size.x + event.clientX - initialPosition.x,
-            y: size.y + event.clientY - initialPosition.y
+        notesDispatch({
+            type: NOTES_ACTIONS.EDIT,
+            payload: {
+                id: id,
+                size: {
+                    x: position.x + event.clientX - initialPosition.x,
+                    y: position.y + event.clientY - initialPosition.y,
+                }
+            }
         })
     }
     const onResizeEnd = (event: any) => {
-        setSize({
-            x: size.x + event.clientX - initialPosition.x,
-            y: size.y + event.clientY - initialPosition.y
+        notesDispatch({
+            type: NOTES_ACTIONS.EDIT,
+            payload: {
+                id: id,
+                size: {
+                    x: position.x + event.clientX - initialPosition.x,
+                    y: position.y + event.clientY - initialPosition.y,
+                }
+            }
         })
         document.onmousemove = null
         document.onmouseup = null
     }
     const onResetSize: MouseEventHandler = (event) => {
-        setSize({
-            x: -1,
-            y: 0
+        notesDispatch({
+            type: NOTES_ACTIONS.EDIT,
+            payload: {
+                id: id,
+                size: { x: -1, y: 0 }
+            }
         })
     }
 
@@ -102,25 +127,9 @@ const Note: React.FC<INoteProp> = ({ data }) => {
     )
 }
 
-Note.defaultProps = {
-    data: {
-        id: 0,
-        reference: true,
-        text: "Initial text",
-        position: { x: 20, y: 20 },
-    },
-}
-
 interface INoteProp {
-    data: {
-        id: number,
-        reference?: boolean,
-        text?: string,
-        position?: IPosition,
-    }
-}
-interface IPosition {
-    x: number, y: number
+    data: INote,
+    notesDispatch: React.Dispatch<INoteAction>,
 }
 
 export default Note;
