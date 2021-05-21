@@ -9,20 +9,14 @@ export enum NOTES_ACTIONS {
 export const reducer: React.Reducer<INotesState, INoteAction> = (prevState, action) => {
     switch (action.type) {
         case NOTES_ACTIONS.CREATE:
-            const newNote: INote = {
+            const defaultNote: INote = {
                 id: uuid(),
-                text: action.payload.text,
-                reference: action.payload.reference || false,
-                position: {
-                    x: action.payload.position.x,
-                    y: action.payload.position.y,
-                },
-                size: {
-                    x: -1,
-                    y: 0,
-                }
+                text: '',
+                reference: false,
+                position: { x: 0, y: 0 },
+                size: { x: -1, y: 0 }
             }
-            return { ...prevState, notes: [...prevState.notes, newNote] }
+            return { ...prevState, notes: [...prevState.notes, Object.assign(defaultNote, action.payload)] }
         case NOTES_ACTIONS.EDIT:
             return {
                 ...prevState,

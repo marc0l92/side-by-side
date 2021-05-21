@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron';
+import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -18,6 +19,12 @@ const createWindow = (): void => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
+  // Install react dev tools
+  installExtension(REACT_DEVELOPER_TOOLS).then((name) => {
+    console.log(`Added Extension: ${name}`);
+  }).catch((err) => {
+    console.error('Extension installation failed: ', err);
+  });
 };
 
 // This method will be called when Electron has finished

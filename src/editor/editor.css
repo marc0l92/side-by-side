@@ -1,4 +1,4 @@
-.containerFlex {
+.editor {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -11,10 +11,16 @@
 .viewerColumn {
     overflow-y: auto;
     overflow-x: hidden;
-    z-index: 10;
-    /* resize: horizontal; */
+    resize: none;
+    direction: rtl;
 }
 
 .notesColumn {
     flex-grow: 1;
+}
+
+.editor .resizeHandle {
+    background-color: #555;
+    width: 5px;
+    cursor: col-resize;
 }

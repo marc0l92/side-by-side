@@ -4,7 +4,7 @@ import { NOTES_ACTIONS, INote, INoteAction } from '../models/notesState'
 // import ReactMarkdown from 'react-markdown'
 // import gfm from 'remark-gfm'
 
-const Note: React.FC<INoteProp> = ({ data, notesDispatch }) => {
+const Note: React.FC<IProp> = ({ data, notesDispatch }) => {
     const { id, reference, position, text, size } = data
     const [moving, setMoving] = useState(false)
     const textAreaRef = useRef(null)
@@ -126,7 +126,7 @@ const Note: React.FC<INoteProp> = ({ data, notesDispatch }) => {
     )
 }
 
-interface INoteProp {
+interface IProp {
     data: INote,
     notesDispatch: React.Dispatch<INoteAction>,
 }
