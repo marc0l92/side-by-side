@@ -26,7 +26,7 @@ const Editor: React.FC = () => {
     }
 
     return (
-        <div className="editor">
+        <div className="editor flex-container">
             <PdfViewer width={pdfViewerWidth} />
             <div className="resizeHandle" draggable="true" onDragStart={onResizeStart} />
             <NotesCanvas />

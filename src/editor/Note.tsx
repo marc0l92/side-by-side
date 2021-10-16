@@ -113,11 +113,11 @@ const Note: React.FC<IProp> = ({ data, notesDispatch }) => {
     }
     const resizeHandleClass: string = "resizeHandle" + ((size.x >= 0) ? ' fixed' : '')
     return (
-        <div className="note" style={noteStyle}>
+        <div className="note flex-container" style={noteStyle}>
             <button className="reference" style={referenceStyle} hidden={!reference} draggable="true" onDragStart={onMoveStart}><i className="fas fa-caret-left" /></button>
             {/* <div className="reference" style={referenceStyle} hidden={reference} draggable="true" onDragStart={onMoveStart}><i className="fas fa-grip-lines-vertical" /></div> */}
             <div>
-                <div className="moveHandle" draggable="true" onDragStart={onMoveStart}><div /></div>
+                <div className="moveHandle" draggable="true" onDragStart={onMoveStart} ><div /></div>
                 <ContentEditable ref={textAreaRef} className="textArea" style={textAreaStyle} html={text} onChange={onContentChange} />
                 {/* <ReactMarkdown remarkPlugins={[gfm]} children={text} /> */}
             </div>
